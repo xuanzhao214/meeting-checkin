@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>苗栗縣環境教育人員增能培訓課程 · 簽到</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --moss:       #2D4A1E;
+      --moss-mid:   #3D6429;
+      --moss-light: #5A8A3C;
+      --sage:       #8AAF6E;
+      --mist:       #C8DCAC;
+      --dew:        #E8F2D8;
+      --parchment:  #F6F4EE;
+      --paper:      #FDFCF8;
+      --ink:        #1C2817;
+      --ink-2:      #3A4A30;
+      --ink-3:      #6B7D5E;
+      --ink-4:      #9BAA8C;
+      --border:     rgba(45,74,30,0.12);
+      --border-2:   rgba(45,74,30,0.22);
+      --red:        #B84A2A;
+      --r-sm:       8px;
+      --r-md:       12px;
+      --r-lg:       18px;
+      --r-xl:       26px;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--parchment);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── Background texture ── */
+    .bg-texture {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 15% 10%, rgba(90,138,60,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 85% 80%, rgba(45,74,30,0.05) 0%, transparent 55%);
+    }
+
+    /* ── Header ── */
+    .site-header {
+      position: relative; z-index: 1;
+      background: var(--moss);
+      padding: 0;
+      overflow: hidden;
+    }
+    .header-inner {
+      max-width: 640px; margin: 0 auto;
+      padding: 2.5rem 1.5rem 2rem;
+      position: relative;
+    }
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 11px; font-family: 'Noto Sans TC', sans-serif;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+    .header-badge::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--mist);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .header-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(17px, 4vw, 21px);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .header-sub {
+      font-size: 13px; color: rgba(255,255,255,0.55);
+      letter-spacing: 0.02em;
+    }
+    .header-deco {
+      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);
+      opacity: 0.08;
+    }
+    .header-deco svg { width: 90px; height: 90px; }
+
+    /* ── Wave divider ── */
+    .wave {
+      display: block; width: 100%;
+      color: var(--parchment);
+      margin-bottom: -2px;
+    }
+
+    /* ── Main content ── */
+    .main {
+      position: relative; z-index: 1; flex: 1;
+      max-width: 640px; width: 100%;
+      margin: 0 auto; padding: 0 1.25rem 3rem;
+    }
+
+    /* ── Form card ── */
+    .form-card {
+      background: var(--paper);
+      border: 0.5px solid var(--border-2);
+      border-radius: var(--r-xl);
+      padding: 2rem;
+      margin-top: -1.5rem;
+      box-shadow: 0 8px 32px rgba(45,74,30,0.09), 0 2px 8px rgba(45,74,30,0.05);
+    }
+    .form-section-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      color: var(--ink-4); text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .form-section-label::after {
+      content: ''; flex: 1; height: 0.5px; background: var(--border);
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 1.1rem; }
+    .field:last-of-type { margin-bottom: 0; }
+    label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12.5px; font-weight: 500;
+      color: var(--ink-2); margin-bottom: 7px;
+    }
+    .label-icon {
+      width: 20px; height: 20px; border-radius: 6px;
+      background: var(--dew); display: inline-flex;
+      align-items: center; justify-content: center;
+    }
+    .label-icon svg { width: 12px; height: 12px; stroke: var(--moss-mid); }
+    .required-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--red); margin-left: auto;
+    }
+    .optional-tag {
+      font-size: 10px; color: var(--ink-4); font-weight: 400;
+      background: var(--parchment); padding: 1px 6px; border-radius: 4px;
+      margin-left: auto;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 15px;
+      font-family: 'Noto Sans TC', sans-serif;
+      border: 0.5px solid var(--border-2);
+      border-radius: var(--r-md);
+      background: var(--parchment);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    input::placeholder { color: var(--ink-4); font-size: 14px; }
+    input:focus {
+      border-color: var(--moss-light);
+      background: var(--paper);
+      box-shadow: 0 0 0 3px rgba(90,138,60,0.15);
+    }
+    input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(184,74,42,0.12); }
+    .err-msg {
+      font-size: 12px; color: var(--red);
+      margin-top: 5px; display: none;
+      align-items: center; gap: 4px;
+    }
+    .err-msg.show { display: flex; }
+
+    .divider {
+      height: 0.5px; background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      width: 100%; padding: 14px;
+      font-size: 15px; font-weight: 500;
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--moss);
+      color: #fff; border: none;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(45,74,30,0.3);
+      letter-spacing: 0.02em;
+    }
+    .btn-submit:hover { background: var(--moss-mid); box-shadow: 0 6px 18px rgba(45,74,30,0.35); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+
+    /* ── Admin link ── */
+    .admin-trigger {
+      text-align: center; margin-top: 1.25rem;
+    }
+    .btn-ghost {
+      background: none; border: none; color: var(--ink-4);
+      font-size: 12px; cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 10px; border-radius: var(--r-sm);
+      transition: color 0.15s, background 0.15s;
+    }
+    .btn-ghost:hover { color: var(--ink-2); background: var(--dew); }
+
+    /* ── Success page ── */
+    .success-wrap {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem 1.25rem;
+      max-width: 520px; width: 100%; margin: 0 auto;
+      text-align: center;
+    }
+    .success-ring {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: var(--dew);
+      border: 2px solid var(--mist);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes pop {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .success-ring svg { width: 44px; height: 44px; stroke: var(--moss); }
+    .success-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--moss); margin-bottom: 8px;
+    }
+    .success-sub { font-size: 14px; color: var(--ink-3); margin-bottom: 2rem; }
+    .receipt {
+      background: var(--paper);
+      border: 0.5px solid var(--border-2);
+      border-radius: var(--r-lg);
+      padding: 1.25rem 1.5rem;
+      width: 100%; text-align: left;
+      margin-bottom: 1.5rem;
+    }
+    .receipt-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0;
+      border-bottom: 0.5px solid var(--border);
+      font-size: 14px;
+    }
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-key { color: var(--ink-3); display: flex; align-items: center; gap: 6px; font-size: 13px; }
+    .receipt-key svg { width: 14px; height: 14px; stroke: var(--sage); flex-shrink: 0; }
+    .receipt-val { font-weight: 500; color: var(--ink); max-width: 60%; text-align: right; }
+    .btn-back {
+      background: none; border: 0.5px solid var(--border-2);
+      color: var(--ink-2); padding: 9px 20px;
+      border-radius: var(--r-md); font-size: 13px;
+      cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-back:hover { background: var(--dew); }
+
+    /* ── Login page ── */
+    .login-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1.25rem;
+    }
+    .login-card {
+      background: var(--paper);
+      border: 0.5px solid var(--border-2);
+      border-radius: var(--r-xl);
+      padding: 2rem;
+      width: 100%; max-width: 360px;
+      box-shadow: 0 8px 32px rgba(45,74,30,0.08);
+    }
+    .login-icon {
+      width: 52px; height: 52px; border-radius: var(--r-md);
+      background: var(--dew); border: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .login-icon svg { width: 24px; height: 24px; stroke: var(--moss-mid); }
+    .login-title { text-align: center; font-size: 17px; font-weight: 500; margin-bottom: 4px; }
+    .login-sub { text-align: center; font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+
+    /* ── Admin page ── */
+    .admin-wrap {
+      flex: 1; padding: 1.5rem 1.25rem 3rem;
+      max-width: 980px; width: 100%; margin: 0 auto;
+    }
+    .admin-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px; margin-bottom: 1.25rem;
+    }
+    .admin-title-group { display: flex; align-items: center; gap: 10px; }
+    .admin-title { font-size: 17px; font-weight: 500; }
+    .count-badge {
+      background: var(--dew); color: var(--moss);
+      font-size: 12px; padding: 3px 10px;
+      border-radius: 20px; font-weight: 500;
+      border: 0.5px solid var(--mist);
+    }
+    .action-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-action {
+      background: var(--paper); border: 0.5px solid var(--border-2);
+      color: var(--ink-2); padding: 8px 14px;
+      border-radius: var(--r-sm); font-size: 13px;
+      cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+      display: inline-flex; align-items: center; gap: 5px;
+      transition: background 0.15s;
+    }
+    .btn-action:hover { background: var(--dew); }
+    .btn-action.green { color: var(--moss); border-color: rgba(45,74,30,0.25); }
+    .btn-action.green:hover { background: var(--dew); }
+    .btn-action svg { width: 15px; height: 15px; stroke: currentColor; flex-shrink: 0; }
+    .search-row {
+      background: var(--paper); border: 0.5px solid var(--border);
+      border-radius: var(--r-md); padding: 9px 14px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .search-row svg { width: 16px; height: 16px; stroke: var(--ink-4); flex-shrink: 0; }
+    .search-row input {
+      border: none; background: transparent; padding: 0;
+      font-size: 14px; color: var(--ink); outline: none; flex: 1;
+      box-shadow: none; border-radius: 0;
+    }
+    .table-wrap {
+      border: 0.5px solid var(--border); border-radius: var(--r-lg);
+      overflow: hidden; overflow-x: auto;
+      background: var(--paper);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+    thead tr { background: var(--dew); }
+    th {
+      padding: 11px 14px; text-align: left; font-weight: 500;
+      color: var(--ink-2); border-bottom: 0.5px solid var(--border);
+      font-size: 12.5px; white-space: nowrap; letter-spacing: 0.02em;
+    }
+    td { padding: 11px 14px; border-bottom: 0.5px solid var(--border); color: var(--ink); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.1s; }
+    tbody tr:hover { background: var(--parchment); }
+    .empty-state {
+      text-align: center; padding: 3.5rem 1rem; color: var(--ink-4);
+    }
+    .empty-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--dew); margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .empty-icon svg { width: 26px; height: 26px; stroke: var(--sage); }
+    .table-footer { font-size: 12px; color: var(--ink-4); text-align: right; margin-top: 8px; }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    .spinner-dark {
+      border-color: rgba(45,74,30,0.2); border-top-color: var(--moss);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff;
+      padding: 10px 20px; border-radius: var(--r-md);
+      font-size: 13px; opacity: 0; transition: opacity 0.25s;
+      pointer-events: none; z-index: 9999; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Footer ── */
+    .site-footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 1.5rem;
+      font-size: 12px; color: var(--ink-4);
+      border-top: 0.5px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-texture" aria-hidden="true"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ══════════════════════════════════════
+     前台：簽到頁
+══════════════════════════════════════ -->
+<div id="page-checkin" class="page active">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-badge">苗栗縣政府 · 環境教育</div>
+      <h1 class="header-title">環境教育人員<br>增能培訓課程簽到</h1>
+      <p class="header-sub">請填寫以下資料完成報到</p>
+      <div class="header-deco" aria-hidden="true">
+        <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M45 5 C20 5 5 25 5 45 C5 65 20 85 45 85 C70 85 85 65 85 45 C85 25 70 5 45 5Z" stroke="white" stroke-width="1" fill="none"/>
+          <path d="M45 15 C25 15 15 30 15 45 C15 60 25 75 45 75 C65 75 75 60 75 45 C75 30 65 15 45 15Z" stroke="white" stroke-width="0.5" fill="none"/>
+          <path d="M10 45 Q30 25 45 45 Q60 65 80 45" stroke="white" stroke-width="0.5" fill="none"/>
+          <path d="M45 10 Q25 30 45 45 Q65 60 45 80" stroke="white" stroke-width="0.5" fill="none"/>
+        </svg>
+      </div>
+    </div>
+    <svg class="wave" viewBox="0 0 1440 32" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,16 C360,32 1080,0 1440,16 L1440,32 L0,32 Z" fill="currentColor"/>
+    </svg>
+  </header>
+
+  <main class="main">
+    <div class="form-card">
+      <div class="form-section-label">基本資料</div>
+
+      <div class="field">
+        <label>
+          <span class="label-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 6h6M5 9h4"/></svg>
+          </span>
+          所屬單位
+          <span class="required-dot" title="必填"></span>
+        </label>
+        <input type="text" id="unit" placeholder="例：環境保護局、原民處、教育處" autocomplete="organization" />
+        <div class="err-msg" id="err-unit">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M8 5v3M8 11v.5"/></svg>
+          請填寫所屬單位
+        </div>
+      </div>
+
+      <div class="field">
+        <label>
+          <span class="label-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h3"/></svg>
+          </span>
+          職稱
+          <span class="required-dot" title="必填"></span>
+        </label>
+        <input type="text" id="title" placeholder="例：局長、科長、委員、技士" autocomplete="organization-title" />
+        <div class="err-msg" id="err-title">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M8 5v3M8 11v.5"/></svg>
+          請填寫職稱
+        </div>
+      </div>
+
+      <div class="field">
+        <label>
+          <span class="label-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+          </span>
+          姓名
+          <span class="required-dot" title="必填"></span>
+        </label>
+        <input type="text" id="name" placeholder="請輸入真實姓名" autocomplete="name" />
+        <div class="err-msg" id="err-name">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M8 5v3M8 11v.5"/></svg>
+          請填寫姓名
+        </div>
+      </div>
+
+      <div class="field">
+        <label>
+          <span class="label-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M2 4h12v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4zM2 4l6 5 6-5"/></svg>
+          </span>
+          備註
+          <span class="optional-tag">選填</span>
+        </label>
+        <input type="text" id="note" placeholder="如：線上出席、代理出席等" />
+      </div>
+
+      <div class="divider"></div>
+
+      <button class="btn-submit" id="submit-btn" onclick="submitCheckin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+        確認簽到
+      </button>
+    </div>
+
+    <div class="admin-trigger">
+      <button class="btn-ghost" onclick="showPage('page-login')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        後台管理
+      </button>
+    </div>
+  </main>
+
+  <footer class="site-footer">苗栗縣政府 · 環境教育人員增能培訓課程</footer>
+</div>
+
+<!-- ══════════════════════════════════════
+     前台：完成頁
+══════════════════════════════════════ -->
+<div id="page-success" class="page">
+  <div class="success-wrap">
+    <div class="success-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+    <h2 class="success-title">您已完成簽到</h2>
+    <p class="success-sub">感謝您的出席，報到資料已成功記錄</p>
+
+    <div class="receipt" id="success-receipt"></div>
+
+    <button class="btn-back" onclick="goBack()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      返回簽到頁
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     後台：登入頁
+══════════════════════════════════════ -->
+<div id="page-login" class="page">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <h2 class="login-title">後台管理</h2>
+      <p class="login-sub">請輸入管理員密碼</p>
+
+      <div class="field">
+        <label>
+          <span class="label-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M4 8a4 4 0 108 0A4 4 0 004 8zM10.5 5.5L14 2M12 2h2v2"/></svg>
+          </span>
+          管理員密碼
+        </label>
+        <input type="password" id="admin-pw" placeholder="輸入密碼"
+          onkeydown="if(event.key==='Enter') doLogin()" />
+        <div class="err-msg" id="err-pw">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M8 5v3M8 11v.5"/></svg>
+          密碼錯誤，請再試一次
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <button class="btn-submit" onclick="doLogin()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        登入管理後台
+      </button>
+
+      <div style="text-align:center;margin-top:1rem;">
+        <button class="btn-ghost" onclick="showPage('page-checkin')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          返回簽到頁
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     後台：管理頁
+══════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="admin-wrap">
+    <div class="admin-topbar">
+      <div class="admin-title-group">
+        <span class="admin-title">報到名單</span>
+        <span class="count-badge" id="count-badge">0 人</span>
+      </div>
+      <div class="action-group">
+        <button class="btn-action" id="refresh-btn" onclick="fetchRecords()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4v5h5M20 20v-5h-5"/><path d="M20 9A8 8 0 006.93 6.93M4 15a8 8 0 0013.07 2.07"/></svg>
+          重新整理
+        </button>
+        <button class="btn-action green" onclick="exportExcel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 12v7a2 2 0 002 2h14a2 2 0 002-2v-7M12 3v12M8 11l4 4 4-4"/></svg>
+          匯出 Excel
+        </button>
+        <button class="btn-action" onclick="showPage('page-checkin')">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          返回簽到
+        </button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input type="text" id="search-input" placeholder="搜尋姓名、單位或職稱…" oninput="renderTable()" aria-label="搜尋" />
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:44px;">#</th>
+            <th>所屬單位</th>
+            <th>職稱</th>
+            <th>姓名</th>
+            <th>備註</th>
+            <th>簽到時間（台灣）</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <p style="font-size:14px;">尚無報到資料，請點「重新整理」載入</p>
+      </div>
+    </div>
+    <p class="table-footer">資料來源：Google 試算表 · 可直接前往試算表查看即時資料</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGt7Fc5w5mH6mC4P803x5ceRK3y2AG3jEtfWo6VxWAhUi6d7_q4qQwElZ5OqTCO8pR7w/exec";
+  const PASSWORD   = "admin1234";
+  let records = [];
+
+  /* ── 頁面切換 ── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'page-admin') fetchRecords();
+  }
+
+  /* ── Toast ── */
+  function showToast(msg, ms = 2600) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), ms);
+  }
+
+  /* ── 登入 ── */
+  function doLogin() {
+    const pw = document.getElementById('admin-pw').value;
+    const err = document.getElementById('err-pw');
+    if (pw === PASSWORD) {
+      err.classList.remove('show');
+      document.getElementById('admin-pw').value = '';
+      showPage('page-admin');
+    } else {
+      err.classList.add('show');
+      document.getElementById('admin-pw').classList.add('error');
+    }
+  }
+
+  /* ── 驗證 ── */
+  function validate() {
+    let ok = true;
+    [['unit','err-unit'],['title','err-title'],['name','err-name']].forEach(([id, err]) => {
+      const el = document.getElementById(id);
+      const eEl = document.getElementById(err);
+      if (!el.value.trim()) { el.classList.add('error'); eEl.classList.add('show'); ok = false; }
+      else { el.classList.remove('error'); eEl.classList.remove('show'); }
+    });
+    return ok;
+  }
+
+  /* ── 取得東8時區時間 ── */
+  function getTaiwanTime() {
+    const now = new Date();
+    const tw = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    const pad = n => String(n).padStart(2, '0');
+    return `${tw.getFullYear()}/${pad(tw.getMonth()+1)}/${pad(tw.getDate())} ${pad(tw.getHours())}:${pad(tw.getMinutes())}:${pad(tw.getSeconds())}`;
+  }
+
+  /* ── 送出簽到 ── */
+  async function submitCheckin() {
+    if (!validate()) return;
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>送出中…';
+
+    const rec = {
+      unit:  document.getElementById('unit').value.trim(),
+      title: document.getElementById('title').value.trim(),
+      name:  document.getElementById('name').value.trim(),
+      note:  document.getElementById('note').value.trim(),
+      time:  getTaiwanTime()
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rec)
+      });
+    } catch(e) {}
+
+    /* 收據 */
+    const rows = [
+      ['所屬單位', '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8AAF6E" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 6h6M5 9h4"/></svg>', rec.unit],
+      ['職稱',     '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8AAF6E" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h3"/></svg>', rec.title],
+      ['姓名',     '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8AAF6E" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>', rec.name],
+      ['簽到時間', '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8AAF6E" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l2.5 2.5"/></svg>', rec.time],
+    ];
+    document.getElementById('success-receipt').innerHTML = rows.map(([k, icon, v]) =>
+      `<div class="receipt-row">
+        <span class="receipt-key">${icon}${k}</span>
+        <span class="receipt-val">${v}</span>
+       </div>`
+    ).join('');
+
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>確認簽到';
+    showPage('page-success');
+  }
+
+  /* ── 返回 ── */
+  function goBack() {
+    ['unit','title','name','note'].forEach(id => document.getElementById(id).value = '');
+    showPage('page-checkin');
+  }
+
+  /* ── 拉取資料 ── */
+  async function fetchRecords() {
+    const btn = document.getElementById('refresh-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner spinner-dark"></span>載入中…';
+    }
+    try {
+      const res = await fetch(SCRIPT_URL + '?t=' + Date.now());
+      const json = await res.json();
+      if (json.status === 'ok') {
+        records = json.records.map(r => ({
+          unit:  r['所屬單位'] || '',
+          title: r['職稱']     || '',
+          name:  r['姓名']     || '',
+          note:  r['備註']     || '',
+          time:  r['簽到時間'] || ''
+        })).filter(r => r.name);
+        renderTable();
+        showToast(`✓ 已載入 ${records.length} 筆資料`);
+      }
+    } catch(e) {
+      showToast('⚠ 載入失敗，請確認網路連線');
+    }
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" style="width:15px;height:15px;stroke:currentColor"><path d="M4 4v5h5M20 20v-5h-5"/><path d="M20 9A8 8 0 006.93 6.93M4 15a8 8 0 0013.07 2.07"/></svg>重新整理';
+    }
+  }
+
+  /* ── 渲染表格 ── */
+  function renderTable() {
+    const q = (document.getElementById('search-input').value || '').toLowerCase();
+    const filtered = records.filter(r =>
+      r.name.toLowerCase().includes(q) ||
+      r.unit.toLowerCase().includes(q) ||
+      r.title.toLowerCase().includes(q)
+    );
+    document.getElementById('count-badge').textContent = records.length + ' 人';
+    const tbody = document.getElementById('table-body');
+    const empty = document.getElementById('empty-state');
+    if (filtered.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    tbody.innerHTML = filtered.map((r, i) =>
+      `<tr>
+        <td style="color:var(--ink-4);font-size:13px;">${i + 1}</td>
+        <td>${r.unit}</td>
+        <td>${r.title}</td>
+        <td><strong>${r.name}</strong></td>
+        <td style="color:var(--ink-3);font-size:13px;">${r.note || '—'}</td>
+        <td style="color:var(--ink-3);font-size:13px;font-variant-numeric:tabular-nums;">${r.time}</td>
+      </tr>`
+    ).join('');
+  }
+
+  /* ── 匯出 Excel ── */
+  function exportExcel() {
+    if (records.length === 0) { alert('目前沒有報到資料，請先點「重新整理」'); return; }
+    const headers = ['序號', '所屬單位', '職稱', '姓名', '備註', '簽到時間（台灣）'];
+    const data = records.map((r, i) => [i + 1, r.unit, r.title, r.name, r.note || '', r.time]);
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+    ws['!cols'] = [{wch:6},{wch:22},{wch:14},{wch:12},{wch:20},{wch:24}];
+    XLSX.utils.book_append_sheet(wb, ws, '報到名單');
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    const pad = n => String(n).padStart(2,'0');
+    XLSX.writeFile(wb, `苗栗環教增能培訓_報到名單_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.xlsx`);
+  }
+
+  /* ── 即時清除錯誤 ── */
+  ['unit','title','name'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function() {
+      if (this.value.trim()) {
+        this.classList.remove('error');
+        document.getElementById('err-' + id).classList.remove('show');
+      }
+    });
+  });
+  document.getElementById('admin-pw').addEventListener('input', function() {
+    document.getElementById('err-pw').classList.remove('show');
+    this.classList.remove('error');
+  });
+</script>
+</body>
+</html>
